@@ -1,8 +1,8 @@
-import 'package:easecook/views/explore_page.dart';
+import 'package:flashy_tab_bar2/flashy_tab_bar2.dart';
 import 'package:flutter/material.dart';
-import 'package:motion_tab_bar_v2/motion-tab-bar.dart';
-import 'package:searchbar_animation/searchbar_animation.dart';
 import '../theme/colors.dart';
+import 'explore_page.dart';
+import 'home_page.dart';
 
 class MainNavBar extends StatefulWidget {
   const MainNavBar({super.key});
@@ -11,25 +11,14 @@ class MainNavBar extends StatefulWidget {
   State<MainNavBar> createState() => _MainNavBarState();
 }
 
-class _MainNavBarState extends State<MainNavBar> with TickerProviderStateMixin {
-  TabController? _tabController;
-  TextEditingController controller = TextEditingController();
+class _MainNavBarState extends State<MainNavBar> {
+  int _selectedIndex = 0;
 
-  @override
-  void initState() {
-    _tabController = TabController(
-      initialIndex: 0,
-      length: 4,
-      vsync: this,
-    );
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _tabController?.dispose();
-  }
+  List<Widget> tabItems = [
+    const HomePage(),
+    const ExplorePage(),
+    const Center(child: Text("2")),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -65,53 +54,37 @@ class _MainNavBarState extends State<MainNavBar> with TickerProviderStateMixin {
               ),
             )
           ]),
-      bottomNavigationBar: MotionTabBar(
-        initialSelectedTab: "Home",
-        useSafeArea: true, // default: true, apply safe area wrapper
-        labels: const ["Home", "Explore", "My Recipes", "Profile"],
-        icons: const [
-          Icons.home_outlined,
-          Icons.explore_outlined,
-          Icons.list_alt_outlined,
-          Icons.person_outlined
-        ],
-
-        tabSize: 50,
-        tabBarHeight: 55,
-        textStyle: const TextStyle(
-          fontSize: 12,
-          color: AppColors.redPrimary,
-          fontWeight: FontWeight.w500,
-        ),
-        tabIconColor: AppColors.redPrimary,
-        tabIconSize: 28.0,
-        tabIconSelectedSize: 26.0,
-        tabSelectedColor: AppColors.redPrimary,
-        tabIconSelectedColor: Colors.white,
-        tabBarColor: Colors.white,
-        onTabItemSelected: (int value) {
-          setState(() {
-            _tabController!.index = value;
-          });
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 500),
+        child: tabItems[_selectedIndex],
+        transitionBuilder: (child, animation) {
+          return FadeTransition(
+            opacity: animation,
+            child: child,
+          );
         },
       ),
-      body: TabBarView(
-        physics:
-            const NeverScrollableScrollPhysics(), // swipe navigation handling is not supported
-        controller: _tabController,
-
-        children: const [
-          Center(
-            child: Text("Home"),
+      bottomNavigationBar: FlashyTabBar(
+        selectedIndex: _selectedIndex,
+        animationCurve: Curves.linear,
+        showElevation: false,
+        onItemSelected: (index) => setState(() {
+          _selectedIndex = index;
+        }),
+        items: [
+          FlashyTabBarItem(
+            icon: const Icon(Icons.home_outlined),
+            title: const Text('Home'),
+            activeColor: AppColors.redPrimary,
           ),
-          Center(
-            child: ExplorePage(),
-          ),
-          Center(
-            child: Text("My Recipes"),
-          ),
-          Center(
-            child: Text("Profile"),
+          FlashyTabBarItem(
+              icon: const Icon(Icons.explore_outlined),
+              title: const Text('Explore'),
+              activeColor: AppColors.redPrimary),
+          FlashyTabBarItem(
+            icon: const Icon(Icons.list_outlined),
+            title: const Text('Highlights'),
+            activeColor: AppColors.redPrimary,
           ),
         ],
       ),

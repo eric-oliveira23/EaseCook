@@ -35,9 +35,9 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  motion_tab_bar_v2: ^0.2.6
   flutter_svg: ^2.0.5
   searchbar_animation: ^0.0.4
+  flashy_tab_bar2: ^0.0.6
   
 
 dev_dependencies:
