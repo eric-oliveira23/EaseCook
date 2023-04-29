@@ -66,7 +66,6 @@ class _MainNavBarState extends State<MainNavBar> {
       ),
       bottomNavigationBar: FlashyTabBar(
         selectedIndex: _selectedIndex,
-        animationCurve: Curves.linear,
         showElevation: false,
         onItemSelected: (index) => setState(() {
           _selectedIndex = index;
@@ -83,7 +82,7 @@ class _MainNavBarState extends State<MainNavBar> {
               activeColor: AppColors.redPrimary),
           FlashyTabBarItem(
             icon: const Icon(Icons.list_outlined),
-            title: const Text('Highlights'),
+            title: const Text('My Recipes'),
             activeColor: AppColors.redPrimary,
           ),
         ],

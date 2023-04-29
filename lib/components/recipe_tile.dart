@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:lottie/lottie.dart';
 import '../theme/colors.dart';
+import 'get_snackbar.dart';
 
 class RecipeTile extends StatefulWidget {
   const RecipeTile({super.key});
@@ -10,7 +12,59 @@ class RecipeTile extends StatefulWidget {
   State<RecipeTile> createState() => _RecipeTileState();
 }
 
-class _RecipeTileState extends State<RecipeTile> {
+class _RecipeTileState extends State<RecipeTile> with TickerProviderStateMixin {
+  bool _isBookmarkActive = false;
+  late AnimationController _animationController;
+
+  void _toggleBookmark() {
+    setState(() {
+      _isBookmarkActive = !_isBookmarkActive;
+
+      if (_isBookmarkActive) {
+        _animationController.forward();
+      } else {
+        _animationController.reverse();
+      }
+    });
+    Get.snackbar(
+      "Success!",
+      "Item saved.",
+      snackPosition: SnackPosition.TOP,
+      margin: const EdgeInsets.all(15),
+      backgroundColor: Colors.black45,
+      barBlur: 1.0,
+      duration: const Duration(
+        milliseconds: 1400,
+      ),
+    );
+  }
+
+  void _resetAnimation() {
+    setState(() {
+      _isBookmarkActive = false;
+    });
+  }
+
+  @override
+  void initState() {
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+    _animationController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        _resetAnimation();
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -20,14 +74,14 @@ class _RecipeTileState extends State<RecipeTile> {
           borderRadius: BorderRadius.circular(25),
           child: ShaderMask(
             shaderCallback: (bounds) {
-              return LinearGradient(
+              return const LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
                   Colors.transparent,
-                  Colors.black.withOpacity(0.9),
+                  Colors.black,
                 ],
-                stops: [0.7, 1.0],
+                stops: [0.5, 0.9],
               ).createShader(Rect.fromLTRB(0, 0, bounds.width, bounds.height));
             },
             blendMode: BlendMode.darken,
@@ -38,12 +92,28 @@ class _RecipeTileState extends State<RecipeTile> {
                 'https://themealdb.com/images/media/meals/yyrrxr1511816289.jpg'),
           ),
         ),
-        const Positioned(
-          right: 12,
-          top: 12,
-          child: Icon(
-            Icons.bookmark,
-            color: AppColors.redPrimary,
+        Positioned(
+          right: 8,
+          top: 8,
+          child: GestureDetector(
+            onTap: () => _toggleBookmark(),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(100),
+                color: Colors.white,
+              ),
+              child: Lottie.asset(
+                'assets/anim/bookmark.json',
+                width: 40,
+                height: 40,
+                animate: _isBookmarkActive,
+                repeat: false,
+                controller: _animationController,
+                onLoaded: (composition) {
+                  _animationController.duration = composition.duration;
+                },
+              ),
+            ),
           ),
         ),
         Positioned(
