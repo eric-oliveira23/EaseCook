@@ -2,7 +2,7 @@ import 'package:flashy_tab_bar2/flashy_tab_bar2.dart';
 import 'package:flutter/material.dart';
 import '../theme/colors.dart';
 import 'explore_page.dart';
-import 'home_page.dart';
+import 'home_page/home_page.dart';
 
 class MainNavBar extends StatefulWidget {
   const MainNavBar({super.key});

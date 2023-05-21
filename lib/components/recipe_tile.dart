@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
+import 'package:get/instance_manager.dart';
 import 'package:lottie/lottie.dart';
 import '../theme/colors.dart';
-import 'get_snackbar.dart';
+import '../views/home_page/home_controller.dart';
 
 class RecipeTile extends StatefulWidget {
   const RecipeTile({super.key});
@@ -13,40 +12,14 @@ class RecipeTile extends StatefulWidget {
 }
 
 class _RecipeTileState extends State<RecipeTile> with TickerProviderStateMixin {
-  bool _isBookmarkActive = false;
   late AnimationController _animationController;
-
-  void _toggleBookmark() {
-    setState(() {
-      _isBookmarkActive = !_isBookmarkActive;
-
-      if (_isBookmarkActive) {
-        _animationController.forward();
-      } else {
-        _animationController.reverse();
-      }
-    });
-    Get.snackbar(
-      "Success!",
-      "Item saved.",
-      snackPosition: SnackPosition.TOP,
-      margin: const EdgeInsets.all(15),
-      backgroundColor: Colors.black45,
-      barBlur: 1.0,
-      duration: const Duration(
-        milliseconds: 1400,
-      ),
-    );
-  }
-
-  void _resetAnimation() {
-    setState(() {
-      _isBookmarkActive = false;
-    });
-  }
+  bool _isBookmarkActive = false;
+  late final HomeController _homeController;
 
   @override
   void initState() {
+    _homeController = Get.find();
+
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
@@ -62,7 +35,19 @@ class _RecipeTileState extends State<RecipeTile> with TickerProviderStateMixin {
   @override
   void dispose() {
     _animationController.dispose();
+
     super.dispose();
+  }
+
+  void _resetAnimation() {
+    setState(() {
+      _homeController.toggleBookmark(
+        _isBookmarkActive,
+        _animationController,
+        context,
+      );
+      _isBookmarkActive = false;
+    });
   }
 
   @override
@@ -96,7 +81,11 @@ class _RecipeTileState extends State<RecipeTile> with TickerProviderStateMixin {
           right: 8,
           top: 8,
           child: GestureDetector(
-            onTap: () => _toggleBookmark(),
+            onTap: () => _homeController.toggleBookmark(
+              _isBookmarkActive,
+              _animationController,
+              context,
+            ),
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(100),

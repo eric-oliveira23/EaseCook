@@ -1,6 +1,7 @@
 import 'package:easecook/theme/colors.dart';
 import 'package:flutter/material.dart';
-import '../components/area_tile.dart';
+import '../../components/area_tile.dart';
+import 'home_binding.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -10,6 +11,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    setupHome();
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,12 +47,12 @@ class _HomePageState extends State<HomePage> {
                     'https://www.themealdb.com/images/category/dessert.png',
                     fit: BoxFit.cover,
                   ),
-                  Positioned(
+                  const Positioned(
                     bottom: 12,
                     left: 12,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
+                      children: [
                         Text(
                           '''I think this is a cake.''',
                           style: TextStyle(
